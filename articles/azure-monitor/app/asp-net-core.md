@@ -513,6 +513,26 @@ This limitation is not applicable from [2.15.0](https://www.nuget.org/packages/M
 
 This SDK requires `HttpContext`, and hence does not work in any non-HTTP applications, including the .NET Core 3.X Worker Service applications. Refer to [this](worker-service.md) document for enabling application insights in such applications, using the newly released Microsoft.ApplicationInsights.WorkerService SDK.
 
+### Can we add some content here to explain the TelemetryClient performance problem?
+Currently, a lot of customer met the performance issue when use TrackTrace method, as they will init the telemtryClent object each time. and our Application Insights SDK didn't recycle those object.  it caused the huge thread increase.   
+
+code as below:
+```
+public void PostTrace()
+{
+    ......
+    
+    TelemetryClient telemetryClient = new TelemetryClient(telemetryConfiguration);
+    telemetryclient.TrackTrace("message",this.securitylevel,this.messagedate);
+    ....
+    telemetryClient.Flush();
+    
+}
+
+```
+
+
+
 ## Open-source SDK
 
 * [Read and contribute to the code](https://github.com/microsoft/ApplicationInsights-dotnet).
